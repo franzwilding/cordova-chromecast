@@ -16,10 +16,10 @@
 {
     CDVPluginResult* pluginResult = nil;
     NSString* receiverAppId = [command.arguments objectAtIndex:0];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", receiverAppId]];
+                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", receiverAppId]];
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -28,11 +28,11 @@
 {
     CDVPluginResult* pluginResult = nil;
     NSString* deviceId = [command.arguments objectAtIndex:0];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", deviceId]];
-    
+                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", deviceId]];
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -40,11 +40,11 @@
 {
     CDVPluginResult* pluginResult = nil;
     NSString* receiverAppId = [command.arguments objectAtIndex:0];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", receiverAppId]];
-    
+                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", receiverAppId]];
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -52,11 +52,11 @@
 {
     CDVPluginResult* pluginResult = nil;
     NSString* channelName = [command.arguments objectAtIndex:0];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
                     [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", channelName]];
-    
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -64,11 +64,11 @@
 {
     CDVPluginResult* pluginResult = nil;
     NSString* channelName = [command.arguments objectAtIndex:0];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", channelName]];
-    
+                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", channelName]];
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
@@ -77,11 +77,11 @@
     CDVPluginResult* pluginResult = nil;
     NSString* channelName = [command.arguments objectAtIndex:0];
     NSString* message = [command.arguments objectAtIndex:1];
-    
+
     //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@ -> %2$@", channelName, message]];
-    
+                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@ -> %2$@", channelName, message]];
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 

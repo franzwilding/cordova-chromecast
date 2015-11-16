@@ -1,5 +1,3 @@
-cordova.define("at.franzwilding.cordova.chromecast.FWChromecast", function(require, exports, module) { var exec = require('cordova/exec');
-
 /**
  * Scan the local wifi for chromecast devices. onDiscover get's called, when
  * devices where found.
@@ -68,5 +66,3 @@ exports.onMessage = function(channelName, onMessage, onError){
 exports.sendMessage = function(channelName, message, onSuccess, onError) {
   cordova.exec(onSuccess, onError, "FWChromecast", "sendMessage", [channelName, message]);
 };
-
-});
