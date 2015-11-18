@@ -6,34 +6,29 @@
 //
 //
 
+#import <Cordova/CDV.h>
 #import <Foundation/Foundation.h>
 #import "FWChromecast.h"
-#import <Cordova/CDV.h>
+#import "DeviceScannerDelegate.h"
+#import "SelectDeviceDelegate.h"
 
 @implementation FWChromecast : CDVPlugin
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
 {
-    CDVPluginResult* pluginResult = nil;
-    NSString* receiverAppId = [command.arguments objectAtIndex:0];
-
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", receiverAppId]];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    NSString *receiverAppId = [command.arguments objectAtIndex:0];
+    self.deviceScannerDelegate = [[DeviceScannerDelegate alloc] initWithCommandDelegate:self.commandDelegate
+                                                                        andCallbackId:command.callbackId];
+    [self.deviceScannerDelegate startScanningForAppId:receiverAppId];
 }
 
 - (void)selectDevice:(CDVInvokedUrlCommand*)command
 {
-    CDVPluginResult* pluginResult = nil;
-    NSString* deviceId = [command.arguments objectAtIndex:0];
-
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", deviceId]];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    NSString* deviceIpAddress = [command.arguments objectAtIndex:0];
+    UInt32 deviceServicePort = (UInt32)[[command.arguments objectAtIndex:1] intValue];
+    self.selectDeviceDelegate = [[SelectDeviceDelegate alloc] initWithCommandDelegate:self.commandDelegate
+                                                                      andCallbackId:command.callbackId];
+    [self.selectDeviceDelegate selectDeviceWithIpAddress:deviceIpAddress andServicePort:deviceServicePort];
 }
 
 - (void)launchApplication:(CDVInvokedUrlCommand*)command

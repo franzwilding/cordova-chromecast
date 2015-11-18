@@ -13,12 +13,13 @@ exports.scanForDevices = function(receiverAppId, onDiscover, onError) {
 /**
  * Select a device to use.
  *
- * @param deviceId, the deviceId found by scanForDevices of the chromecast.
+ * @param ipAddress, the ipAddress found by scanForDevices of the chromecast.
+ * @param servicePort, the servicePort found by scanForDevices of the chromecast.
  * @param onSelect, call function, gets called when device was selected.
  * @param onError, callback function, gets called when an error occures.
  */
-exports.selectDevice = function(deviceId, onSelect, onError) {
-  cordova.exec(onSelect, onError, "FWChromecast", "selectDevice", [deviceId]);
+exports.selectDevice = function(ipAddress, servicePort, onSelect, onError) {
+  cordova.exec(onSelect, onError, "FWChromecast", "selectDevice", [ipAddress, servicePort]);
 };
 
 /**

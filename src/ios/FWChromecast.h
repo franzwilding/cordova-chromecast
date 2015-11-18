@@ -10,6 +10,8 @@
 #define FWChromecast_h
 
 #import <Cordova/CDV.h>
+#import "DeviceScannerDelegate.h"
+#import "SelectDeviceDelegate.h"
 
 @interface FWChromecast : CDVPlugin
 
@@ -19,6 +21,8 @@
 - (void)startChannel:(CDVInvokedUrlCommand*)command;
 - (void)onMessage:(CDVInvokedUrlCommand*)command;
 - (void)sendMessage:(CDVInvokedUrlCommand*)command;
+@property(nonatomic, strong) DeviceScannerDelegate* deviceScannerDelegate;
+@property(nonatomic, strong) SelectDeviceDelegate* selectDeviceDelegate;
 
 @end
 
