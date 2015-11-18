@@ -17,8 +17,11 @@
     return [super init];
 }
 
-- (void)sendResponse:(NSDictionary*)response {
+- (void)sendResponse:(id)data from:(NSString*)command andKeepItAlive:(bool)keepItAlive {
     NSError *error;
+    NSDictionary *response = [[NSDictionary alloc] initWithObjectsAndKeys:
+                              command, @"command",
+                              data, @"data", nil];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:response options:0 error:&error];
     CDVPluginResult *pluginResult;
     
@@ -29,6 +32,8 @@
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
                         [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]];
     }
+    
+    [pluginResult setKeepCallbackAsBool:keepItAlive];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
 }
 

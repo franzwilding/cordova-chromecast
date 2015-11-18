@@ -24,11 +24,10 @@
 
 - (void)selectDevice:(CDVInvokedUrlCommand*)command
 {
-    NSString* deviceIpAddress = [command.arguments objectAtIndex:0];
-    UInt32 deviceServicePort = (UInt32)[[command.arguments objectAtIndex:1] intValue];
+    NSString* deviceId = [command.arguments objectAtIndex:0];
     self.selectDeviceDelegate = [[SelectDeviceDelegate alloc] initWithCommandDelegate:self.commandDelegate
                                                                       andCallbackId:command.callbackId];
-    [self.selectDeviceDelegate selectDeviceWithIpAddress:deviceIpAddress andServicePort:deviceServicePort];
+    [self.selectDeviceDelegate selectDevice:[self.deviceScannerDelegate findDevice:deviceId]];
 }
 
 - (void)launchApplication:(CDVInvokedUrlCommand*)command

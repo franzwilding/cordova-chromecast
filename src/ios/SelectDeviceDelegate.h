@@ -14,7 +14,7 @@
 
 @interface SelectDeviceDelegate : CommandDelegate
 
-- (void)selectDeviceWithIpAddress:(NSString*) ipAddress andServicePort:(UInt32)servicePort;
+- (void)selectDevice:(GCKDevice*) device;
 @property(nonatomic, strong) GCKDeviceManager* deviceManager;
 @property(nonatomic, strong) GCKDevice *device;
 

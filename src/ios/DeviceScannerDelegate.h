@@ -15,6 +15,7 @@
 @interface DeviceScannerDelegate : CommandDelegate
 
 - (void)startScanningForAppId:(NSString*) appId;
+- (GCKDevice*)findDevice:(NSString*)deviceId;
 @property(nonatomic, strong) GCKDeviceScanner* deviceScanner;
 
 @end

@@ -1,3 +1,8 @@
+
+exports.unhandledException = function(error) {
+  console.log("FWChromecast ERROR: " + error);
+};
+
 /**
  * Scan the local wifi for chromecast devices. onDiscover get's called, when
  * devices where found.
@@ -6,8 +11,24 @@
  * @param onDiscover, callback function, gets called when devices where found.
  * @param onError, callback function, gets called when an error occures.
  */
-exports.scanForDevices = function(receiverAppId, onDiscover, onError) {
-  cordova.exec(onDiscover, onError, "FWChromecast", "scanForDevices", [receiverAppId]);
+exports.scanForDevices = function(receiverAppId) {
+  var t = this;
+
+  // this method should only be called once.
+  if(!t.startedListening) {
+    t.startedListening = true;
+    t.devices = {};
+    cordova.exec(function(response){
+      response = JSON.parse(response);
+      if(response.command == 'deviceDidComeOnline') {
+        t.devices[response.data.id] = response.data;
+        $(t).trigger('GCK.deviceDidComeOnline', response.data);
+      } else {
+        delete t.devices[response.data.id];
+        $(t).trigger('GCK.deviceDidGoOffline', response.data);
+      }
+    }, t.unhandledException, "FWChromecast", "scanForDevices", [receiverAppId]);
+  }
 };
 
 /**
@@ -18,8 +39,44 @@ exports.scanForDevices = function(receiverAppId, onDiscover, onError) {
  * @param onSelect, call function, gets called when device was selected.
  * @param onError, callback function, gets called when an error occures.
  */
-exports.selectDevice = function(ipAddress, servicePort, onSelect, onError) {
-  cordova.exec(onSelect, onError, "FWChromecast", "selectDevice", [ipAddress, servicePort]);
+exports.selectDevice = function(device) {
+  var t = this;
+
+  if(typeof(t.devices[device]) == 'undefined') {
+    return false;
+  }
+
+  cordova.exec(function(response){
+    response = JSON.parse(response);
+    if(response.command == 'deviceConnected') {
+      t.connected = t.devices[device];
+      $(t).trigger('GCK.deviceConnected', t.connected);
+    }
+
+    if(response.command == 'applicationLaunched') {
+      $(t).trigger('GCK.applicationLaunched', response.data);
+    }
+
+    if(response.command == 'applicationNotLaunched') {
+      $(t).trigger('GCK.applicationNotLaunched', response.data);
+    }
+
+    if(response.command == 'failToConnectToApp') {
+      $(t).trigger('GCK.failToConnectToApp', response.data);
+    }
+
+    if(response.command == 'failToConnect') {
+      $(t).trigger('GCK.failToConnect', response.data);
+    }
+
+    if(response.command == 'disconnectWithError') {
+      $(t).trigger('GCK.disconnectWithError', response.data);
+    }
+
+    if(response.command == 'receiveStatusForApp') {
+      $(t).trigger('GCK.failToConnect', response.data);
+    }
+  }, t.unhandledException, "FWChromecast", "selectDevice", [device]);
 };
 
 /**

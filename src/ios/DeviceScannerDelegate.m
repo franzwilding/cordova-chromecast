@@ -30,22 +30,34 @@
     [self.deviceScanner startScan];
 }
 
+- (GCKDevice*)findDevice:(NSString*)deviceId {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"deviceID == %@", deviceId];
+    NSArray *filteredArray = [self.deviceScanner.devices filteredArrayUsingPredicate:predicate];
+    if(filteredArray.count > 0) {
+        return filteredArray.firstObject;
+    } else {
+        return nil;
+    }
+}
+
 // [START device-scanner-listener]
 #pragma mark - GCKDeviceScannerListener
 - (void)deviceDidComeOnline:(GCKDevice *)device {
-    [self sendResponse:[[NSDictionary alloc] initWithObjectsAndKeys:
-                        @"online", @"action",
-                        device.friendlyName, @"friendlyName",
-                        device.ipAddress, @"ipAddress",
-                        [[NSNumber alloc] initWithUnsignedInt:device.servicePort], @"servicePort", nil]];
+    NSDictionary *data = [[NSDictionary alloc] initWithObjectsAndKeys:
+                          device.deviceID, @"id",
+                          device.friendlyName, @"friendlyName",
+                          device.ipAddress, @"ipAddress",
+                          [[NSNumber alloc] initWithUnsignedInt:device.servicePort], @"servicePort", nil];
+    [self sendResponse:data from:@"deviceDidComeOnline" andKeepItAlive:true];
 }
 
 - (void)deviceDidGoOffline:(GCKDevice *)device {
-    [self sendResponse:[[NSDictionary alloc] initWithObjectsAndKeys:
-                        @"offline", @"action",
-                        device.friendlyName, @"friendlyName",
-                        device.ipAddress, @"ipAddress",
-                        [[NSNumber alloc] initWithUnsignedInt:device.servicePort], @"servicePort", nil]];
+    NSDictionary *data = [[NSDictionary alloc] initWithObjectsAndKeys:
+                          device.deviceID, @"id",
+                          device.friendlyName, @"friendlyName",
+                          device.ipAddress, @"ipAddress",
+                          [[NSNumber alloc] initWithUnsignedInt:device.servicePort], @"servicePort", nil];
+    [self sendResponse:data from:@"deviceDidGoOffline" andKeepItAlive:true];
 }
 // [END device-scanner-listener]
 
