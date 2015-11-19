@@ -79,6 +79,7 @@
 - (void)playMedia:(CDVInvokedUrlCommand*)command {
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to play a media item you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate play];
 }
@@ -86,6 +87,7 @@
 - (void)pauseMedia:(CDVInvokedUrlCommand*)command {
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to pause a media item you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate pause];
 }
@@ -93,6 +95,7 @@
 - (void)stopMedia:(CDVInvokedUrlCommand*)command {
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to stop a media item you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate stop];
 }
@@ -101,6 +104,7 @@
     bool mute = [[command.arguments objectAtIndex:0] boolValue];
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to mute a media item you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate mute:mute];
 }
@@ -109,14 +113,16 @@
     float volume = [[command.arguments objectAtIndex:0] floatValue];
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to set the volume you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate setVolume:volume];
 }
 
 - (void)seekMedia:(CDVInvokedUrlCommand*)command {
-    NSTimeInterval time = [[command.arguments objectAtIndex:0] timeInterval];
+    NSTimeInterval time = [[command.arguments objectAtIndex:0] doubleValue];
     if(self.mediaChannelDelegate == nil) {
         CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to seek a media item you need to load it first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     [self.mediaChannelDelegate seek:time];
 }
