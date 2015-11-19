@@ -23,6 +23,15 @@
     [self.deviceManager connect];
 }
 
+
+- (void)launchApplication:(NSString *)receiverAppId {
+    [self.deviceManager launchApplication:receiverAppId];
+}
+
+- (void)addChannel:(GCKCastChannel*)channel {
+    [self.deviceManager addChannel:channel];
+}
+
 #pragma mark - GCKDeviceManagerDelegate
 
 // [START launch-application]
@@ -32,7 +41,7 @@
                           self.device.friendlyName, @"friendlyName",
                           self.device.ipAddress, @"ipAddress",
                           [[NSNumber alloc] initWithUnsignedInt:self.device.servicePort], @"servicePort", nil];
-    [self sendResponse:data from:@"deviceConnected" andKeepItAlive:false];
+    [self sendResponse:data from:@"deviceConnected" andKeepItAlive:true];
 }
 // [END launch-application]
 
@@ -44,28 +53,24 @@ didConnectToCastApplication:(GCKApplicationMetadata *)applicationMetadata
                           applicationMetadata.applicationID, @"applicationID",
                           applicationMetadata.applicationName, @"applicationName",
                           applicationMetadata.senderAppIdentifier, @"senderAppIdentifier",
+                          launchedApplication, @"launchedApplication",
                           applicationMetadata.senderAppLaunchURL, @"senderAppLaunchURL", nil];
-    if (launchedApplication) {
-        [self sendResponse:data from:@"applicationLaunched" andKeepItAlive:false];
-    }
-    else{
-        [self sendResponse:data from:@"applicationNotLaunched" andKeepItAlive:false];
-    }
+    [self sendResponse:data from:@"applicationLaunched" andKeepItAlive:true];
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
 didFailToConnectToApplicationWithError:(NSError *)error {
-    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"failToConnectToApp" andKeepItAlive:false];
+    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"failToConnectToApp" andKeepItAlive:true];
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
 didFailToConnectWithError:(GCKError *)error {
-    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"failToConnect" andKeepItAlive:false];
+    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"failToConnect" andKeepItAlive:true];
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
 didDisconnectWithError:(GCKError *)error {
-    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"disconnectWithError" andKeepItAlive:false];
+    [self sendResponse:[NSString stringWithFormat:@"%@", error] from:@"disconnectWithError" andKeepItAlive:true];
 }
 
 - (void)deviceManager:(GCKDeviceManager *)deviceManager
@@ -75,7 +80,7 @@ didReceiveStatusForApplication:(GCKApplicationMetadata *)applicationMetadata {
                           applicationMetadata.applicationName, @"applicationName",
                           applicationMetadata.senderAppIdentifier, @"senderAppIdentifier",
                           applicationMetadata.senderAppLaunchURL, @"senderAppLaunchURL", nil];
-    [self sendResponse:data from:@"receiveStatusForApp" andKeepItAlive:false];
+    [self sendResponse:data from:@"receiveStatusForApp" andKeepItAlive:true];
 }
 
 @end

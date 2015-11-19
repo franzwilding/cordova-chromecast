@@ -8,18 +8,20 @@
 
 #import <Cordova/CDV.h>
 #import <Foundation/Foundation.h>
+#import <GoogleCast/GoogleCast.h>
 #import "FWChromecast.h"
 #import "DeviceScannerDelegate.h"
 #import "SelectDeviceDelegate.h"
+#import "MediaChannelDelegate.h"
 
 @implementation FWChromecast : CDVPlugin
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
 {
-    NSString *receiverAppId = [command.arguments objectAtIndex:0];
+    self.receiverAppId = [command.arguments objectAtIndex:0];
     self.deviceScannerDelegate = [[DeviceScannerDelegate alloc] initWithCommandDelegate:self.commandDelegate
                                                                         andCallbackId:command.callbackId];
-    [self.deviceScannerDelegate startScanningForAppId:receiverAppId];
+    [self.deviceScannerDelegate startScanningForAppId:self.receiverAppId];
 }
 
 - (void)selectDevice:(CDVInvokedUrlCommand*)command
@@ -32,51 +34,91 @@
 
 - (void)launchApplication:(CDVInvokedUrlCommand*)command
 {
-    CDVPluginResult* pluginResult = nil;
-    NSString* receiverAppId = [command.arguments objectAtIndex:0];
-
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", receiverAppId]];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    if(self.selectDeviceDelegate == nil || self.receiverAppId == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to launch an application you need to select a device first."];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    }
+    [self.selectDeviceDelegate launchApplication:self.receiverAppId];
 }
 
-- (void)startChannel:(CDVInvokedUrlCommand*)command
+- (void)startMediaChannel:(CDVInvokedUrlCommand*)command
 {
-    CDVPluginResult* pluginResult = nil;
-    NSString* channelName = [command.arguments objectAtIndex:0];
+    GCKMediaControlChannel *mediaChannel = [[GCKMediaControlChannel alloc] init];
+    self.mediaChannelDelegate = [[MediaChannelDelegate alloc] initWithCommandDelegate:self.commandDelegate andCallbackId:command.callbackId];
+    mediaChannel.delegate = self.mediaChannelDelegate;
+    self.mediaChannelDelegate.channel = mediaChannel;
+    [self.selectDeviceDelegate addChannel:mediaChannel];
 
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yes. Param: %1$@", channelName]];
-
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)onMessage:(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = nil;
-    NSString* channelName = [command.arguments objectAtIndex:0];
 
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@", channelName]];
+- (void)loadMedia:(CDVInvokedUrlCommand*)command {
 
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    if(self.mediaChannelDelegate == nil) {
+        [self startMediaChannel:command];
+    }
+
+    NSString *title = [command.arguments objectAtIndex:0];
+    NSString *mediaUrl = [command.arguments objectAtIndex:1];
+    NSString *contentType = [command.arguments objectAtIndex:2];
+    NSString *subtitle = [command.arguments objectAtIndex:3];
+
+    GCKMediaMetadata *metadata = [[GCKMediaMetadata alloc] init];
+    [metadata setString:title forKey:kGCKMetadataKeyTitle];
+    [metadata setString:subtitle forKey:kGCKMetadataKeySubtitle];
+
+    [self.mediaChannelDelegate loadMedia: [[GCKMediaInformation alloc]
+                                           initWithContentID:mediaUrl
+                                           streamType:GCKMediaStreamTypeNone
+                                           contentType:contentType
+                                           metadata:metadata
+                                           streamDuration:0
+                                           customData:nil]];
 }
 
-- (void)sendMessage:(CDVInvokedUrlCommand*)command
-{
-    CDVPluginResult* pluginResult = nil;
-    NSString* channelName = [command.arguments objectAtIndex:0];
-    NSString* message = [command.arguments objectAtIndex:1];
+- (void)playMedia:(CDVInvokedUrlCommand*)command {
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to play a media item you need to load it first."];
+    }
+    [self.mediaChannelDelegate play];
+}
 
-    //pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
-    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:
-                    [NSString stringWithFormat:@"Not implemented yet. Param: %1$@ -> %2$@", channelName, message]];
+- (void)pauseMedia:(CDVInvokedUrlCommand*)command {
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to pause a media item you need to load it first."];
+    }
+    [self.mediaChannelDelegate pause];
+}
 
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+- (void)stopMedia:(CDVInvokedUrlCommand*)command {
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to stop a media item you need to load it first."];
+    }
+    [self.mediaChannelDelegate stop];
+}
+
+- (void)muteMedia:(CDVInvokedUrlCommand*)command {
+    bool mute = [[command.arguments objectAtIndex:0] boolValue];
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to mute a media item you need to load it first."];
+    }
+    [self.mediaChannelDelegate mute:mute];
+}
+
+- (void)setVolumeForMedia:(CDVInvokedUrlCommand*)command {
+    float volume = [[command.arguments objectAtIndex:0] floatValue];
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to set the volume you need to load it first."];
+    }
+    [self.mediaChannelDelegate setVolume:volume];
+}
+
+- (void)seekMedia:(CDVInvokedUrlCommand*)command {
+    NSTimeInterval time = [[command.arguments objectAtIndex:0] timeInterval];
+    if(self.mediaChannelDelegate == nil) {
+        CDVPluginResult*pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_INVALID_ACTION messageAsString:@"In order to seek a media item you need to load it first."];
+    }
+    [self.mediaChannelDelegate seek:time];
 }
 
 @end

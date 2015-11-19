@@ -15,6 +15,8 @@
 @interface SelectDeviceDelegate : CommandDelegate
 
 - (void)selectDevice:(GCKDevice*) device;
+- (void)launchApplication:(NSString*)receiverAppId;
+- (void)addChannel:(GCKCastChannel*)channel;
 @property(nonatomic, strong) GCKDeviceManager* deviceManager;
 @property(nonatomic, strong) GCKDevice *device;
 

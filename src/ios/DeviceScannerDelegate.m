@@ -22,10 +22,8 @@
     GCKFilterCriteria *filterCriteria = [GCKFilterCriteria criteriaForAvailableApplicationWithID:appId];
     
     // Initialize device scanner.
-    /*self.deviceScanner = [[GCKDeviceScanner alloc] initWithFilterCriteria:filterCriteria];
-    [_deviceScanner addListener:self];
-    [_deviceScanner startScan];*/
-    self.deviceScanner = [[GCKDeviceScanner alloc] init];
+    self.deviceScanner = [[GCKDeviceScanner alloc] initWithFilterCriteria:filterCriteria];
+    //self.deviceScanner = [[GCKDeviceScanner alloc] init];
     [self.deviceScanner addListener:self];
     [self.deviceScanner startScan];
 }

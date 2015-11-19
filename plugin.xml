@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="at.franzwilding.cordova.chromecast" version="0.0.1">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="fw-cordova-chromecast" version="0.0.1">
     <name>FW Chromecast</name>
     <description>Cordova Plugin to communicate with chromecast.</description>
 
-    <js-module src="www/FWChromecast.js" name="FWChromecast">
+    <js-module src="www/gck.js" name="FWChromecast">
         <clobbers target="cordova.plugins.FWChromecast" />
     </js-module>
 
@@ -23,6 +23,8 @@
       	<source-file src="src/ios/DeviceScannerDelegate.m" />
         <header-file src="src/ios/SelectDeviceDelegate.h" />
       	<source-file src="src/ios/SelectDeviceDelegate.m" />
+        <header-file src="src/ios/MediaChannelDelegate.h" />
+      	<source-file src="src/ios/MediaChannelDelegate.m" />
 
         <framework src="Accelerate.framework" />
         <framework src="AudioToolbox.framework" />

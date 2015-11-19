@@ -12,17 +12,25 @@
 #import <Cordova/CDV.h>
 #import "DeviceScannerDelegate.h"
 #import "SelectDeviceDelegate.h"
+#import "MediaChannelDelegate.h"
 
 @interface FWChromecast : CDVPlugin
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command;
 - (void)selectDevice:(CDVInvokedUrlCommand*)command;
 - (void)launchApplication:(CDVInvokedUrlCommand*)command;
-- (void)startChannel:(CDVInvokedUrlCommand*)command;
-- (void)onMessage:(CDVInvokedUrlCommand*)command;
-- (void)sendMessage:(CDVInvokedUrlCommand*)command;
+- (void)startMediaChannel:(CDVInvokedUrlCommand*)command;
+- (void)loadMedia:(CDVInvokedUrlCommand*)command;
+- (void)playMedia:(CDVInvokedUrlCommand*)command;
+- (void)pauseMedia:(CDVInvokedUrlCommand*)command;
+- (void)stopMedia:(CDVInvokedUrlCommand*)command;
+- (void)muteMedia:(CDVInvokedUrlCommand*)command;
+- (void)setVolumeForMedia:(CDVInvokedUrlCommand*)command;
+- (void)seekMedia:(CDVInvokedUrlCommand*)command;
 @property(nonatomic, strong) DeviceScannerDelegate* deviceScannerDelegate;
 @property(nonatomic, strong) SelectDeviceDelegate* selectDeviceDelegate;
+@property(nonatomic, strong) MediaChannelDelegate* mediaChannelDelegate;
+@property(nonatomic, strong) NSString* receiverAppId;
 
 @end
 
