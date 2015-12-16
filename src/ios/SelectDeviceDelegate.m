@@ -28,6 +28,11 @@
     [self.deviceManager launchApplication:receiverAppId];
 }
 
+- (void)disconnect {
+    [self.deviceManager leaveApplication];
+    [self.deviceManager disconnect];
+}
+
 - (void)addChannel:(GCKCastChannel*)channel {
     [self.deviceManager addChannel:channel];
 }

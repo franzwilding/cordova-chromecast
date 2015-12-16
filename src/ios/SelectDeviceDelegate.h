@@ -17,6 +17,7 @@
 - (void)selectDevice:(GCKDevice*) device;
 - (void)launchApplication:(NSString*)receiverAppId;
 - (void)addChannel:(GCKCastChannel*)channel;
+- (void)disconnect;
 @property(nonatomic, strong) GCKDeviceManager* deviceManager;
 @property(nonatomic, strong) GCKDevice *device;
 

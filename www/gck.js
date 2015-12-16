@@ -113,6 +113,16 @@ exports.launchApplication = function() {
 };
 
 /**
+ * Disconnect from application.
+ */
+exports.disconnect = function() {
+  var dfd = $.Deferred();
+  var t = this;
+  cordova.exec(undefined, t.unhandledException, "FWChromecast", "disconnect", []);
+  return dfd.promise();
+};
+
+/**
  * Start the default media channel.
  */
 exports.startMediaChannel = function() {

@@ -41,6 +41,13 @@
     [self.selectDeviceDelegate launchApplication:self.receiverAppId];
 }
 
+- (void)disconnect
+{
+    if(self.selectDeviceDelegate != nil) {
+        [self.selectDeviceDelegate disconnect];
+    }
+}
+
 - (void)startMediaChannel:(CDVInvokedUrlCommand*)command
 {
     GCKMediaControlChannel *mediaChannel = [[GCKMediaControlChannel alloc] init];
